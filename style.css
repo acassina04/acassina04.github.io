@@ -1,0 +1,51 @@
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; background: #0f0f14; color: #fff; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+
+.app { display: grid; place-items: center; min-height: 100vh; padding: 16px; }
+.stage {
+  position: relative; width: min(920px, 92vw); aspect-ratio: 16/9;
+  border-radius: 16px; overflow: hidden; background: #151520;
+  box-shadow: 0 10px 40px rgba(0,0,0,.5);
+}
+
+.layer {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  object-fit: cover; opacity: 0; transition: opacity 900ms ease;
+  will-change: opacity;
+}
+.layer.visible { opacity: 1; }
+
+.caption {
+  position: absolute; left: 0; right: 0; bottom: 0;
+  padding: 14px 18px; background: linear-gradient(180deg, transparent, rgba(0,0,0,.6));
+  font-size: 1rem; letter-spacing: .2px;
+}
+
+.nav {
+  position: absolute; top: 50%; transform: translateY(-50%);
+  background: rgba(0,0,0,.35); border: 0; color: #fff; font-size: 28px;
+  width: 44px; height: 44px; border-radius: 50%;
+  display: grid; place-items: center; cursor: pointer; user-select: none;
+  transition: background 200ms;
+}
+.nav:hover { background: rgba(0,0,0,.55); }
+.nav.left { left: 10px; }
+.nav.right { right: 10px; }
+
+.playhint {
+  position: absolute; left: 50%; bottom: 14px; transform: translateX(-50%);
+  padding: 10px 14px; border-radius: 999px; border: 0; cursor: pointer;
+  background: #ffffff; color: #111; font-weight: 600; font-size: 14px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.35);
+}
+.playhint.hidden { display: none; }
+
+.dots {
+  margin-top: 12px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+}
+.dots button {
+  width: 10px; height: 10px; border-radius: 50%; border: 0; cursor: pointer;
+  background: #4a4a57;
+}
+.dots button.active { background: #fff; }
+.dots button:focus-visible { outline: 2px solid #fff; }
