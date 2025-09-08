@@ -3,31 +3,80 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🎂 Sorpresa de Cumple</title>
-  <link rel="preload" as="image" href="assets/img1.jpg">
-  <link rel="preload" as="image" href="assets/img2.jpg">
-  <link rel="preload" as="image" href="assets/img3.jpg">
+  <title>🎂 Feliz Cumple</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="preload" as="image" href="assets/foto1.jpg">
 </head>
 <body>
-  <div class="app">
-    <div class="stage" id="stage" aria-live="polite">
-      <!-- Doble capa para crossfade -->
-      <img id="layerA" class="layer visible" alt="Slide actual" />
-      <img id="layerB" class="layer" alt="Siguiente slide" />
-      <div class="caption" id="caption" role="note"></div>
+  <header class="site-header">
+    <nav class="nav">
+      <a class="logo" href="#inicio">🎉</a>
+      <a href="#inicio">Inicio</a>
+      <a href="#galeria">Galería</a>
+      <a href="#mensajes">Mensajes</a>
+      <button id="muteBtn" class="mute" aria-pressed="false" aria-label="Silenciar música">🔊</button>
+    </nav>
+  </header>
 
-      <button class="nav left" id="prevBtn" aria-label="Anterior">❮</button>
-      <button class="nav right" id="nextBtn" aria-label="Siguiente">❯</button>
+  <main>
+    <!-- INICIO -->
+    <section id="inicio" class="section hero observe">
+      <div class="hero-inner">
+        <h1>¡Feliz cumpleaños, <span id="nombre">Amigx</span>! 🎂</h1>
+        <p>Preparamos algo especial para ti: recuerdos, música y buenos deseos.</p>
+        <div class="cta-row">
+          <button id="startBtn" class="btn-primario">Comenzar</button>
+          <a class="btn-secundario" href="#galeria">Ver galería</a>
+        </div>
+      </div>
+      <audio id="player" preload="auto" loop src="assets/cancion.mp3"></audio>
+    </section>
 
-      <button class="playhint" id="playHint">🎵 Toca para activar sonido</button>
-    </div>
+    <!-- GALERÍA -->
+    <section id="galeria" class="section observe">
+      <h2>Galería de recuerdos 📸</h2>
+      <p class="sub">Haz clic en una foto para verla grande.</p>
+      <div class="grid">
+        <img src="assets/foto1.jpg" alt="Recuerdo 1" data-large="assets/foto1.jpg">
+        <img src="assets/foto2.jpg" alt="Recuerdo 2" data-large="assets/foto2.jpg">
+        <img src="assets/foto3.jpg" alt="Recuerdo 3" data-large="assets/foto3.jpg">
+        <img src="assets/foto4.jpg" alt="Recuerdo 4" data-large="assets/foto4.jpg">
+        <img src="assets/foto5.jpg" alt="Recuerdo 5" data-large="assets/foto5.jpg">
+        <img src="assets/foto6.jpg" alt="Recuerdo 6" data-large="assets/foto6.jpg">
+      </div>
+    </section>
 
-    <div class="dots" id="dots" aria-label="Paginación"></div>
+    <!-- MENSAJES -->
+    <section id="mensajes" class="section observe">
+      <h2>Mensajes ✨</h2>
+      <div class="cards">
+        <article class="card">
+          <h3>De la familia</h3>
+          <p>Que este año esté lleno de salud, amor y risas. ¡Te queremos!</p>
+        </article>
+        <article class="card">
+          <h3>De tus amigos</h3>
+          <p>Gracias por tantos momentos. ¡Vamos por muchos más!</p>
+        </article>
+        <article class="card">
+          <h3>De mí para ti</h3>
+          <p>Eres increíble. Hoy celebramos todo lo que te hace únicx. 🥳</p>
+        </article>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <small>Hecho con ❤️</small>
+  </footer>
+
+  <!-- Lightbox -->
+  <div id="lightbox" class="lightbox" aria-hidden="true">
+    <button class="lightbox-close" aria-label="Cerrar">✕</button>
+    <img class="lightbox-img" alt="">
+    <button class="lightbox-prev" aria-label="Anterior">❮</button>
+    <button class="lightbox-next" aria-label="Siguiente">❯</button>
   </div>
-
-  <!-- Un único elemento <audio>; cambiamos el src por slide -->
-  <audio id="player" preload="auto"></audio>
 
   <script src="script.js"></script>
 </body>

@@ -1,142 +1,74 @@
-// Configura tus slides aquí
-const slides = [
-  { img: "assets/img1.jpg", audio: "assets/song1.mp3", caption: "¡Feliz cumple! 🎂" },
-  { img: "assets/img2.jpg", audio: "assets/song2.mp3", caption: "Que tu día esté lleno de sonrisas 😄" },
-  { img: "assets/img3.jpg", audio: "assets/song3.mp3", caption: "¡Y muchas sorpresas! 🎉" },
-];
+// --- Música / interacción inicial ---
+const audioEl = document.getElementById('player');
+const startBtn = document.getElementById('startBtn');
+const muteBtn = document.getElementById('muteBtn');
 
-const layerA = document.getElementById("layerA");
-const layerB = document.getElementById("layerB");
-const caption = document.getElementById("caption");
-const dotsEl = document.getElementById("dots");
-const audioEl = document.getElementById("player");
-const playHint = document.getElementById("playHint");
+let audioEnabled = false;
 
-let current = 0;
-let topIsA = true;          // cuál capa está visible (para el crossfade)
-let audioEnabled = false;   // hasta que el usuario interactúe
-let touchStartX = null;
-
-// Crear dots
-slides.forEach((_, i) => {
-  const b = document.createElement("button");
-  b.setAttribute("aria-label", `Ir al slide ${i+1}`);
-  b.addEventListener("click", () => goTo(i));
-  dotsEl.appendChild(b);
-});
-
-function setDots(idx) {
-  [...dotsEl.children].forEach((b, i) => b.classList.toggle("active", i === idx));
-}
-
-function preloadImages() {
-  slides.forEach(s => { const im = new Image(); im.src = s.img; });
-}
-preloadImages();
-
-function setInitial() {
-  layerA.src = slides[0].img;
-  layerA.classList.add("visible");
-  caption.textContent = slides[0].caption;
-  setDots(0);
-}
-setInitial();
-
-// Crossfade entre capas
-function swapTo(nextIdx) {
-  const nextImg = slides[nextIdx].img;
-  const nextCaption = slides[nextIdx].caption;
-
-  const top = topIsA ? layerA : layerB;
-  const bottom = topIsA ? layerB : layerA;
-
-  bottom.src = nextImg;
-  // Forzamos reflow para que transition funcione si cambiamos muy rápido
-  void bottom.offsetWidth;
-
-  bottom.classList.add("visible");
-  top.classList.remove("visible");
-
-  caption.textContent = nextCaption;
-  topIsA = !topIsA;
-}
-
-async function fadeAudioTo(targetVolume = 1, durationMs = 500) {
-  const steps = 20;
-  const stepTime = durationMs / steps;
-  const start = audioEl.volume;
-  const delta = targetVolume - start;
-
-  for (let i = 1; i <= steps; i++) {
-    audioEl.volume = Math.min(1, Math.max(0, start + (delta * i) / steps));
-    await new Promise(r => setTimeout(r, stepTime));
-  }
-}
-
-async function playSlideAudio(idx) {
-  if (!audioEnabled) return;
-  const src = slides[idx].audio;
-  try {
-    // fade out, cambiar src, play, fade in
-    await fadeAudioTo(0, 250);
-    audioEl.src = src;
-    await audioEl.play();
-    await fadeAudioTo(1, 400);
-  } catch (e) {
-    // Si falla (por políticas), mostramos el botón
-    playHint.classList.remove("hidden");
-  }
-}
-
-function goTo(idx) {
-  if (idx === current) return;
-  current = (idx + slides.length) % slides.length;
-  setDots(current);
-  swapTo(current);
-  playSlideAudio(current);
-}
-
-function next() { goTo(current + 1); }
-function prev() { goTo(current - 1); }
-
-// Botones
-document.getElementById("nextBtn").addEventListener("click", next);
-document.getElementById("prevBtn").addEventListener("click", prev);
-
-// Teclado
-window.addEventListener("keydown", (e) => {
-  if (e.key === "ArrowRight") next();
-  if (e.key === "ArrowLeft") prev();
-});
-
-// Primer clic habilita audio (autoplay policy)
-function enableAudioOnce() {
+function enableAudio() {
+  if (audioEnabled) return;
   audioEnabled = true;
-  playHint.classList.add("hidden");
-  // arrancar audio del slide actual
-  audioEl.src = slides[current].audio;
   audioEl.volume = 0;
-  audioEl.play().then(() => fadeAudioTo(1, 500)).catch(() => {
-    playHint.classList.remove("hidden");
-  });
-  // remover para que no se dispare de nuevo
-  window.removeEventListener("click", enableAudioOnce);
-  window.removeEventListener("keydown", enableAudioOnce);
-  window.removeEventListener("touchstart", enableAudioOnce);
+  audioEl.play().then(() => fadeVolume(1, 600)).catch(()=>{ /* si falla, ignorar */ });
 }
-window.addEventListener("click", enableAudioOnce, { once: true });
-window.addEventListener("keydown", enableAudioOnce, { once: true });
-window.addEventListener("touchstart", enableAudioOnce, { once: true });
+startBtn.addEventListener('click', enableAudio);
 
-// Swipe táctil
-const stage = document.getElementById("stage");
-stage.addEventListener("touchstart", (e) => {
-  touchStartX = e.touches[0].clientX;
-}, { passive: true });
+muteBtn.addEventListener('click', () => {
+  const isMuted = audioEl.muted = !audioEl.muted;
+  muteBtn.setAttribute('aria-pressed', String(isMuted));
+  muteBtn.textContent = isMuted ? '🔈' : '🔊';
+});
 
-stage.addEventListener("touchend", (e) => {
-  if (touchStartX == null) return;
-  const dx = e.changedTouches[0].clientX - touchStartX;
-  if (Math.abs(dx) > 40) (dx < 0 ? next() : prev());
-  touchStartX = null;
-}, { passive: true });
+async function fadeVolume(target = 1, ms = 400) {
+  const steps = 16, dt = ms/steps, start = audioEl.volume, delta = target-start;
+  for (let i=1;i<=steps;i++){ audioEl.volume = start + (delta*i)/steps; await wait(dt);}
+}
+function wait(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+// --- Aparición suave on-scroll ---
+const obs = new IntersectionObserver((entries)=>{
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+},{threshold:.2});
+document.querySelectorAll('.observe').forEach(el=>obs.observe(el));
+
+// --- Lightbox de galería ---
+const imgs = [...document.querySelectorAll('.grid img')];
+const lb = document.getElementById('lightbox');
+const lbImg = lb.querySelector('.lightbox-img');
+const btnClose = lb.querySelector('.lightbox-close');
+const btnPrev = lb.querySelector('.lightbox-prev');
+const btnNext = lb.querySelector('.lightbox-next');
+
+let idx = 0;
+function openLB(i){
+  idx = i;
+  lb.classList.add('show');
+  loadCurrent();
+}
+function closeLB(){ lb.classList.remove('show'); }
+function loadCurrent(){
+  lbImg.classList.remove('ready');
+  const src = imgs[idx].dataset.large || imgs[idx].src;
+  const temp = new Image();
+  temp.onload = () => { lbImg.src = src; lbImg.classList.add('ready'); };
+  temp.src = src;
+}
+function prev(){ idx = (idx - 1 + imgs.length) % imgs.length; loadCurrent(); }
+function next(){ idx = (idx + 1) % imgs.length; loadCurrent(); }
+
+imgs.forEach((im,i)=>im.addEventListener('click',()=>openLB(i)));
+btnClose.addEventListener('click',closeLB);
+btnPrev.addEventListener('click',prev);
+btnNext.addEventListener('click',next);
+document.addEventListener('keydown',e=>{
+  if(lb.classList.contains('show')){
+    if(e.key==='Escape') closeLB();
+    if(e.key==='ArrowLeft') prev();
+    if(e.key==='ArrowRight') next();
+  }
+});
+
+// --- UX: si el usuario navega directo a galería/mensajes, permitir click anywhere para activar música ---
+['click','keydown','touchstart'].forEach(ev=>{
+  window.addEventListener(ev,()=>{ if(!audioEnabled) enableAudio(); }, { once:true });
+});
