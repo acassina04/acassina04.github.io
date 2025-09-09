@@ -3,80 +3,55 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>🎂 Feliz Cumple1</title>
+  <title>🎂 Sorpresa</title>
   <link rel="stylesheet" href="style.css" />
-  <link rel="preload" as="image" href="assets/foto1.jpg">
 </head>
 <body>
   <header class="site-header">
     <nav class="nav">
-      <a class="logo" href="#inicio">🎉</a>
-      <a href="#inicio">Inicio</a>
-      <a href="#galeria">Galería</a>
-      <a href="#mensajes">Mensajes</a>
-      <button id="muteBtn" class="mute" aria-pressed="false" aria-label="Silenciar música">🔊</button>
+      <a href="#s1" class="logo">🎉</a>
+      <a href="#s1">Inicio</a>
+      <a href="#s2">Recuerdos</a>
+      <a href="#s3">Deseos</a>
+      <div class="audio-controls">
+        <button id="playBtn" class="btn" aria-pressed="false" aria-label="Reproducir/Pausar">▶︎</button>
+        <button id="muteBtn" class="btn" aria-pressed="false" aria-label="Silenciar">🔊</button>
+      </div>
     </nav>
   </header>
 
   <main>
-    <!-- INICIO -->
-    <section id="inicio" class="section hero observe">
-      <div class="hero-inner">
-        <h1>¡Feliz cumpleaños, <span id="nombre">Amigx</span>! 🎂</h1>
-        <p>Preparamos algo especial para ti: recuerdos, música y buenos deseos.</p>
-        <div class="cta-row">
-          <button id="startBtn" class="btn-primario">Comenzar</button>
-          <a class="btn-secundario" href="#galeria">Ver galería</a>
-        </div>
-      </div>
-      <audio id="player" preload="auto" loop src="assets/cancion.mp3"></audio>
-    </section>
-
-    <!-- GALERÍA -->
-    <section id="galeria" class="section observe">
-      <h2>Galería de recuerdos 📸</h2>
-      <p class="sub">Haz clic en una foto para verla grande.</p>
-      <div class="grid">
-        <img src="assets/foto1.jpg" alt="Recuerdo 1" data-large="assets/foto1.jpg">
-        <img src="assets/foto2.jpg" alt="Recuerdo 2" data-large="assets/foto2.jpg">
-        <img src="assets/foto3.jpg" alt="Recuerdo 3" data-large="assets/foto3.jpg">
-        <img src="assets/foto4.jpg" alt="Recuerdo 4" data-large="assets/foto4.jpg">
-        <img src="assets/foto5.jpg" alt="Recuerdo 5" data-large="assets/foto5.jpg">
-        <img src="assets/foto6.jpg" alt="Recuerdo 6" data-large="assets/foto6.jpg">
+    <!-- Cada sección define su pista con data-audio -->
+    <section id="s1" class="panel" data-audio="assets/song1.mp3">
+      <div class="inner">
+        <h1>¡Feliz Cumple! 🎂</h1>
+        <p>Desliza o toca “Siguiente” para continuar.</p>
+        <img src="assets/foto1.jpg" alt="Foto 1">
+        <a href="#s2" class="next btn">Siguiente ↓</a>
       </div>
     </section>
 
-    <!-- MENSAJES -->
-    <section id="mensajes" class="section observe">
-      <h2>Mensajes ✨</h2>
-      <div class="cards">
-        <article class="card">
-          <h3>De la familia</h3>
-          <p>Que este año esté lleno de salud, amor y risas. ¡Te queremos!</p>
-        </article>
-        <article class="card">
-          <h3>De tus amigos</h3>
-          <p>Gracias por tantos momentos. ¡Vamos por muchos más!</p>
-        </article>
-        <article class="card">
-          <h3>De mí para ti</h3>
-          <p>Eres increíble. Hoy celebramos todo lo que te hace únicx. 🥳</p>
-        </article>
+    <section id="s2" class="panel" data-audio="assets/song2.mp3">
+      <div class="inner">
+        <h2>Recuerdos 📸</h2>
+        <p>Que nunca falten las risas y los buenos momentos.</p>
+        <img src="assets/foto2.jpg" alt="Foto 2">
+        <a href="#s3" class="next btn">Siguiente ↓</a>
+      </div>
+    </section>
+
+    <section id="s3" class="panel" data-audio="assets/song3.mp3">
+      <div class="inner">
+        <h2>Buenos deseos ✨</h2>
+        <p>Salud, cariño y aventuras para este nuevo año.</p>
+        <img src="assets/foto3.jpg" alt="Foto 3">
+        <a href="#s1" class="next btn">Volver ↑</a>
       </div>
     </section>
   </main>
 
-  <footer class="site-footer">
-    <small>Hecho con ❤️</small>
-  </footer>
-
-  <!-- Lightbox -->
-  <div id="lightbox" class="lightbox" aria-hidden="true">
-    <button class="lightbox-close" aria-label="Cerrar">✕</button>
-    <img class="lightbox-img" alt="">
-    <button class="lightbox-prev" aria-label="Anterior">❮</button>
-    <button class="lightbox-next" aria-label="Siguiente">❯</button>
-  </div>
+  <!-- Reproductor global -->
+  <audio id="player" preload="auto"></audio>
 
   <script src="script.js"></script>
 </body>
